@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MARBLE FLOORS SOUTH AFRICA - Luxury Floors with Pi</title>
+<script src="https://sdk.minepi.com/pi-sdk.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif}
+body{background:#faf9f6;color:#222}
+header{background:#1a1a1a;color:#fff;padding:15px 20px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0}
+.logo{font-weight:bold;font-size:20px;letter-spacing:2px}
+nav a{color:#d4af37;margin-left:15px;text-decoration:none;font-weight:600;font-size:14px}
+.hero{background:linear-gradient(rgba(0,0,0,0.6),rgba(0,0,0,0.6)), url('https://via.placeholder.com/1200x600?text=Marble+Luxury') center/cover;color:#fff;padding:80px 20px;text-align:center}
+.hero h1{font-size:42px;color:#d4af37}
+.hero p{font-size:18px;margin:15px 0}
+.btn{background:#d4af37;color:#1a1a1a;padding:14px 28px;border:none;border-radius:4px;font-weight:bold;cursor:pointer;margin:8px;letter-spacing:1px}
+.btn-dark{background:#1a1a1a;color:#d4af37;border:1px solid #d4af37}
+.section{max-width:1150px;margin:auto;padding:45px 20px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:22px}
+.card{background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 8px 25px rgba(0,0,0,0.08);text-align:center;padding-bottom:18px;border:1px solid #eee}
+.card img{width:100%;height:200px;object-fit:cover;background:#ddd}
+.card h3{margin:12px 0 5px}
+.price{color:#1a1a1a;font-weight:bold}
+.price span{color:#d4af37}
+.sample{background:#fff;padding:30px;border-radius:8px;max-width:700px;margin:30px auto;box-shadow:0 8px 30px rgba(0,0,0,0.08);border-left:5px solid #d4af37}
+input,select,textarea{width:100%;padding:12px;margin:8px 0;border:1px solid #ccc;border-radius:4px}
+footer{background:#1a1a1a;color:#999;text-align:center;padding:35px 20px;margin-top:40px}
+footer a{color:#d4af37;text-decoration:none}
+</style>
+</head>
+<body>
+<header>
+<div class="logo">✦ MARBLE FLOORS SA</div>
+<nav><a href="#collection">Collection</a><a href="#quote">Quote</a><a href="legal.html">Legal</a><a href="report.html">Contact</a></nav>
+</header>
+
+<div class="hero">
+<h1>MARBLE FLOORS SOUTH AFRICA</h1>
+<p>Luxury Marble • Granite • Porcelain • Installation Nationwide - Pay with Pi</p>
+<br>
+<button class="btn" onclick="loginWithPi()">🔐 Login with Pi</button>
+<button class="btn btn-dark" onclick="payWithPi('Marble Consultation')">💳 Pay Deposit with Pi</button>
+<p id="status" style="margin-top:15px;font-weight:bold;color:#d4af37"></p>
+</div>
+
+<div class="section" id="collection">
+<h2 style="text-align:center;letter-spacing:3px">OUR MARBLE COLLECTION</h2><br>
+<div class="grid" id="products">
+
+<div class="card"><img src="https://via.placeholder.com/400x300?text=Carrara+White"><h3>Carrara White Marble</h3><p>Italian classic - Kitchens & Bath</p><p class="price"><span>π 8.5 / m²</span></p><button class="btn btn-dark" onclick="payWithPi('Carrara White - π 8.5/m²')">Order Sample with Pi</button></div>
+
+<div class="card"><img src="https://via.placeholder.com/400x300?text=Calacatta+Gold"><h3>Calacatta Gold</h3><p>Luxury gold veins - Living rooms</p><p class="price"><span>π 12.2 / m²</span></p><button class="btn btn-dark" onclick="payWithPi('Calacatta Gold - π 12.2/m²')">Order Sample with Pi</button></div>
+
+<div class="card"><img src="https://via.placeholder.com/400x300?text=Emperador+Dark"><h3>Emperador Dark Brown</h3><p>Elegant dark - Hotels & Offices</p><p class="price"><span>π 9.8 / m²</span></p><button class="btn btn-dark" onclick="payWithPi('Emperador Dark - π 9.8/m²')">Order Sample with Pi</button></div>
+
+<div class="card"><img src="https://via.placeholder.com/400x300?text=Nero+Marquina"><h3>Nero Marquina Black</h3><p>Modern black & white veins</p><p class="price"><span>π 11.0 / m²</span></p><button class="btn btn-dark" onclick="payWithPi('Nero Marquina - π 11/m²')">Order Sample with Pi</button></div>
+
+<div class="card"><img src="https://via.placeholder.com/400x300?text=Travertine"><h3>Travertine Beige</h3><p>Natural outdoor & indoor</p><p class="price"><span>π 6.5 / m²</span></p><button class="btn btn-dark" onclick="payWithPi('Travertine - π 6.5/m²')">Order Sample with Pi</button></div>
+
+<div class="card"><img src="https://via.placeholder.com/400x300?text=Installation"><img src="https://via.placeholder.com/400x300?text=Installation+Service"><h3>Full Installation Service</h3><p>Supply + Fit + Polish</p><p class="price"><span>From π 4.5 / m² labour</span></p><button class="btn btn-dark" onclick="payWithPi('Installation Service')">Book Installer with Pi</button></div>
+
+</div>
+</div>
+
+<div class="section" id="quote">
+<div class="sample">
+<h2>Free Site Measurement & Quote</h2>
+<p>Get quote in 24 hours - Gauteng, Free State, Western Cape</p>
+<input type="text" id="name" placeholder="Full Name">
+<input type="text" id="phone" placeholder="Phone / WhatsApp">
+<input type="text" id="area" placeholder="Area e.g. Sandton - 80m²">
+<select id="marble"><option>Carrara White</option><option>Calacatta Gold</option><option>Emperador Dark</option><option>Nero Marquina</option><option>Travertine</option><option>Not sure - need advice</option></select>
+<textarea rows="3" placeholder="Tell us about your project..."></textarea>
+<button class="btn" style="width:100%" onclick="payWithPi('Site Quote Request - R500 / π 1')">Pay π 1 for Site Visit & Quote</button>
+</div>
+</div>
+
+<footer>
+<p>© 2026 MARBLE FLOORS SOUTH AFRICA | Johannesburg | Cape Town | Bloemfontein</p>
+<p><a href="legal.html">Privacy & Terms</a> | <a href="report.html">Support & Showroom</a></p>
+<p>Email: marblefloorssa@gmail.com | Luxury Floors with Pi Network</p>
+</footer>
+
+<script>
+const Pi = window.Pi; Pi.init({ version: "2.0", sandbox: false }); let user=null;
+function onIncomplete(p){ console.log(p); }
+async function loginWithPi(){
+try{ const a=await Pi.authenticate(['username','payments'], onIncomplete); user=a.user; document.getElementById('status').innerText="Welcome " + user.username + " ✅ Pi Connected - Ready to Order Marble"; }
+catch(e){ document.getElementById('status').innerText="Login failed: " + e.message; }
+}
+async function payWithPi(item){
+if(!user){ alert("Please Login with Pi first"); loginWithPi(); return; }
+try{
+await Pi.createPayment({ amount: 1.8, memo: "Marble Floors SA - " + item, metadata: { product: item } },{
+onReadyForServerApproval: async (id)=>{ document.getElementById('status').innerText="Approving Pi Payment..."; },
+onReadyForServerCompletion: async (id, tx)=>{ document.getElementById('status').innerText="✅ Paid! " + item + " Confirmed. TX:" + tx; alert("✅ Thank you! Showroom will contact you for " + item); },
+onCancel: ()=>{ document.getElementById('status').innerText="Payment Cancelled"; },
+onError: (e)=>{ document.getElementById('status').innerText="Error: " + e.message; }
+});
+}catch(e){ alert(e.message); }
+}
+</script>
+</body>
+</html>
