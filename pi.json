@@ -1,0 +1,14 @@
+{
+  "app_name": "Marble Floors South Africa",
+  "display_name": "Marble Floors SA",
+  "description": "Premium marble, granite and tile flooring solutions for homes and businesses in South Africa. Get quotes, book installation, and pay with Pi. Serving Gauteng and nationwide.",
+  "category": "Home Improvement & Construction",
+  "tags": ["marble", "flooring", "construction", "south-africa", "pi-payment"],
+  "developer": "Ndhlovu36",
+  "version": "1.0.0",
+  "ecosystem_apps": ["Resurrected Building Projects", "Agricultural Equipment Market"],
+  "features": ["Pi Payments", "Quote Calculator", "Installation Booking", "Gallery"],
+  "services": ["Marble Flooring", "Granite Countertops", "Tile Installation", "Floor Polishing"],
+  "region": "South Africa",
+  "hackathon_track": "Real World Utility"
+}
