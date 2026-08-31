@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Marble Floors SA - Pay with Pi</title>
+<script src="https://sdk.minepi.com/pi-sdk.js"></script>
+<style>
+body{font-family:Arial;padding:20px;max-width:600px;margin:auto}
+button{padding:12px 18px;margin:5px;font-weight:bold;cursor:pointer}
+#userInfo{color:green;font-weight:bold;font-size:18px}
+.footer{margin-top:40px;padding-top:20px;border-top:1px solid #ccc}
+</style>
+</head>
+<body>
+
+<h1>My Products</h1>
+<p>Price: 1 Pi - Marble Floor Quote</p>
+<p id="userInfo"></p>
+
+<button onclick="loginWithPi()">Login with Pi</button>
+<button onclick="payWithPi('Marble Floor Quote')">Pay with Pi</button>
+
+<div class="footer">
+<p>© 2026 MARBLE FLOORS SOUTH AFRICA</p>
+<p><a href="privacy.html">Privacy</a> | <a href="terms.html">Terms</a> | <a href="support.html">Support</a></p>
+<p>Email: marblefloorssa@gmail.com</p>
+</div>
+
+<script>
+const Pi = window.Pi;
+Pi.init({ version: "2.0", sandbox: false });
+let user = null;
+
+async function loginWithPi(){
+ try{
+  const scopes = ['username','payments'];
+  const auth = await Pi.authenticate(scopes, onIncompletePaymentFound);
+  user = auth.user;
+  document.getElementById('userInfo').innerText = "Welcome "+user.username+" ✅ Pi Connected";
+ }catch(e){
+  alert("Open in Pi Browser: "+e.message);
+ }
+}
+
+function onIncompletePaymentFound(payment){
+ console.log("Incomplete:", payment);
+}
+
+async function payWithPi(item){
+ if(!user){ alert("Login first!"); return; }
+ try{
+  const paymentData = {
+   amount: 1,
+   memo: "Marble Floor - "+item,
+   metadata: { item: item }
+  };
+
+  const callbacks = {
+   onReadyForServerApproval: async function(paymentId){
+    console.log("Approving: "+paymentId);
+    try{
+     const res = await fetch('/api/approve', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({paymentId: paymentId})
+     });
+     const data = await res.json();
+     console.log("Approved:", data);
+    }catch(err){
+     console.error("Approve failed:", err);
+    }
+   },
+   onReadyForServerCompletion: async function(paymentId, txid){
+    console.log("Completing: "+paymentId+" TX:"+txid);
+    try{
+     const res = await fetch('/api/complete', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({paymentId: paymentId, txid: txid})
+     });
+     const data = await res.json();
+     alert("Payment SUCCESS! Thank you! TX: "+txid);
+    }catch(err){
+     console.error("Complete failed:", err);
+    }
+   },
+   onCancel: function(paymentId){ alert("Cancelled"); },
+   onError: function(error, payment){ alert("Error: "+error.message); }
+  };
+
+  await Pi.createPayment(paymentData, callbacks);
+ }catch(e){ alert("Error: "+e.message); }
+}
+</script>
+
+</body>
+</html>
