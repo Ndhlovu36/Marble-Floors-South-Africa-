@@ -11,7 +11,7 @@ export default async function handler(req, res) {
     const response = await fetch(`https://api.minepi.com/v2/payments/${paymentId}/approve`, {
       method: 'POST',
       headers: {telscflxpglidlntvqsnslc4jflquffrtjyndblmm358uoy8rnwcplkoinfi16fm
-        'Authorization': `Key `,
+        'Authorization': `Key telscflxpglidlntvqsnslc4jflquffrtjyndblmm358uoy8rnwcplkoinfi16fm
         'Content-Type': 'application/json'
       }
     });
