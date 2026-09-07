@@ -1,0 +1,51 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Marble Floors SA</title>
+<script src="https://sdk.minepi.com/pi-sdk.js"></script>
+<style>body{font-family:Arial;margin:0;background:#fcfaf8}
+.header{background:#4a148c;color:#FFD700;padding:16px;text-align:center}
+.btn-login{background:#FFD700;color:#4a148c;border:none;padding:11px 22px;border-radius:25px;font-weight:900;cursor:pointer}
+.logged{background:#2e7d32;color:#fff;padding:6px 14px;border-radius:20px;font-weight:900;font-size:12px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:8px}
+.card{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 6px rgba(0,0,0,.1);border:1px solid #e1bee7}
+.card img{width:100%;height:120px;object-fit:cover}
+.card-body{padding:8px}.price{color:#4a148c;font-weight:900;font-size:13px}
+.btn-pi{background:#4a148c;color:#FFD700;width:100%;padding:9px;border:1px solid #FFD700;border-radius:6px;font-weight:900;margin-top:6px;cursor:pointer}
+.btn-wa{background:#25D366;color:white;width:100%;padding:8px;border:none;border-radius:6px;font-weight:700;margin-top:5px;cursor:pointer;font-size:11px}
+</style></head><body>
+<div class="header"><h1>MARBLE FLOORS SA</h1>
+<div style="margin-top:10px;"><button class="btn-login" id="lb" onclick="login()">🔐 LOGIN WITH PI</button><div id="li" style="display:none;"></div><div id="st" style="font-size:10px;color:#e1bee7;margin-top:5px;">Login to buy</div></div></div>
+<div style="padding:8px;display:flex;gap:8px;background:#fff;"><input id="wa" placeholder="WhatsApp 060..." value="0607263726" style="flex:1;padding:9px;border:2px solid #ce93d8;border-radius:6px"><input id="lo" placeholder="Location" value="Johannesburg" style="flex:1;padding:9px;border:2px solid #ce93d8;border-radius:6px"></div>
+<div class="grid" id="g"></div>
+<script>
+let logged=false, piUser=null; try{Pi.init({version:"2.0",sandbox:false});}catch(e){}
+function login(){
+ logged=true; document.getElementById('lb').style.display='none';
+ let d=document.getElementById('li'); d.style.display='block'; d.innerHTML='<span class="logged">✅ Logged in - Ready</span>';
+ document.getElementById('st').innerText='Trying real Pi login...';
+ try{ Pi.authenticate(['username','payments'], a=>{ piUser=a.user; d.innerHTML='<span class="logged">✅ @'+a.user.username+' Pi Ready</span>'; document.getElementById('st').innerText='Pi Payment Enabled'; }, e=>{ document.getElementById('st').innerText='WhatsApp Mode Ready'; }); }catch(e){ document.getElementById('st').innerText='WhatsApp Mode Ready'; }
+}
+const P=[["Carrara White 60x60",18,"https://images.unsplash.com/photo-1618221469555-7f3ad97540d6?w=300"],["Black Marquina",22,"https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=300"],["Grey Emperador",16,"https://images.unsplash.com/photo-1586105251261-72a756497a11?w=300"],["Calacatta Gold",28,"https://images.unsplash.com/photo-1616047006789-b7af5afb8c20?w=300"],["Travertine Beige",14,"https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=300"],["Statuario White",26,"https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=300"]];
+document.getElementById('g').innerHTML=P.map(x=>`<div class="card"><img src="${x[2]}"><div class="card-body"><div style="font-size:11px;font-weight:800;color:#4a148c;">${x[0]}</div><div class="price">${x[1]} Pi ~ R${x[1]*150}</div><button class="btn-pi" onclick="payPi('${x[0]}',${x[1]})">💜 Pay ${x[1]} Pi</button><button class="btn-wa" onclick="payWa('${x[0]}',${x[1]})">💬 WhatsApp Order / Cash / EFT</button></div></div>`).join('');
+
+function needLogin(){ if(!logged){ alert('Tap LOGIN WITH PI first'); window.scrollTo(0,0); return true; } return false; }
+
+function payPi(name,price){
+ if(needLogin()) return;
+ let wa=document.getElementById('wa').value, lo=document.getElementById('lo').value;
+ if(!piUser || typeof Pi==='undefined' || !Pi.createPayment){
+   alert('Pi Pay only works inside Pi Browser. Use WhatsApp button for now.'); payWa(name,price); return;
+ }
+ document.getElementById('st').innerText='Creating Pi Payment...';
+ Pi.createPayment({amount:price,memo:name,metadata:{product:name,wa,lo}},{
+   onReadyForServerApproval: id=>fetch('/api/approve-payment',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({paymentId:id})}),
+   onReadyForServerCompletion: (id,txid)=>fetch('/api/complete-payment',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({paymentId:id,txid})}).then(()=>{ document.getElementById('st').innerText='✅ Pi Paid!'; let t=`✅ PI PAYMENT DONE!\nProduct:${name}\nAmount:${price} Pi\nTx:${txid}\nWA:${wa}\nLoc:${lo}\nPlease confirm delivery.`; window.open('https://wa.me/27607263726?text='+encodeURIComponent(t),'_blank'); }),
+   onCancel: ()=>{document.getElementById('st').innerText='Cancelled'}, onError: e=>{document.getElementById('st').innerText='Error, try WhatsApp';}
+ });
+}
+function payWa(name,price){
+ if(needLogin()) return;
+ let wa=document.getElementById('wa').value, lo=document.getElementById('lo').value;
+ let t=`Hi Marble Floors SA! 👋\nI want to order via WhatsApp/Cash/EFT:\n\nProduct: ${name}\nPrice: ${price} Pi (~R${price*150})\nMy WA: ${wa}\nMy Location: ${lo}\n\nPlease send me payment options & delivery cost.`;
+ window.open('https://wa.me/27607263726?text='+encodeURIComponent(t),'_blank');
+}
+</script></body></html>
