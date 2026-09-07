@@ -1,0 +1,70 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Marble Floors SA - Pi Pay</title>
+<script src="https://sdk.minepi.com/pi-sdk.js"></script>
+<style>body{font-family:Arial;margin:0;background:#fcfaf8}
+.header{background:#4a148c;color:#FFD700;padding:18px;text-align:center;border-bottom:3px solid #FFD700}
+.header h1{font-size:21px}
+.btn-login{background:#FFD700;color:#4a148c;border:none;padding:12px 22px;border-radius:25px;font-weight:900;font-size:14px;cursor:pointer}
+.logged{background:#2e7d32;color:white;padding:6px 14px;border-radius:20px;font-weight:900;display:inline-block;font-size:13px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:8px}
+.card{background:#fff;border-radius:12px;overflow:hidden;margin:8px;box-shadow:0 2px 6px rgba(0,0,0,.1);border:1px solid #e1bee7}
+.card img{width:100%;height:120px;object-fit:cover}
+.card-body{padding:8px}
+.price{color:#4a148c;font-weight:900}
+.buy{background:#4a148c;color:#FFD700;width:100%;padding:9px;border:1px solid #FFD700;border-radius:6px;font-weight:900;margin-top:6px;cursor:pointer}
+</style></head><body>
+<div class="header"><h1>MARBLE FLOORS SOUTH AFRICA</h1>
+<div style="margin-top:10px;"><button class="btn-login" id="lb" onclick="piLogin()">🔐 LOGIN WITH PI - TAP HERE</button><div id="li" style="display:none;margin-top:8px;"></div><div id="status" style="font-size:11px;color:#e1bee7;margin-top:6px;">Ready for Pi Payment</div></div></div>
+<div style="padding:8px;display:flex;gap:8px;background:white;"><input id="wa" value="0607263726" style="flex:1;padding:10px;border:2px solid #ce93d8;border-radius:6px"><input id="lo" value="Johannesburg" style="flex:1;padding:10px;border:2px solid #ce93d8;border-radius:6px"></div>
+<div class="grid" id="g"></div>
+<script>
+let currentUser=null; let PiReady=false;
+try{ Pi.init({version:"2.0", sandbox:false}); PiReady=true; document.getElementById('status').innerText='Pi SDK Ready - Tap Login'; }catch(e){ document.getElementById('status').innerText='Demo Mode - Pi Browser needed for Pi Pay'; }
+
+function piLogin(){
+ if(!PiReady || typeof Pi==='undefined'){
+   currentUser={username:'MarbleBuyer'}; showLogged('✅ Logged (Demo) - WhatsApp Order'); return;
+ }
+ Pi.authenticate(['username','payments'], function(auth){
+   currentUser=auth.user; showLogged('✅ @'+auth.user.username+' - Pi Ready');
+ }, function(err){
+   currentUser={username:'Guest'}; showLogged('✅ Guest - WhatsApp Order');
+ });
+}
+function showLogged(t){ document.getElementById('lb').style.display='none'; let d=document.getElementById('li'); d.style.display='block'; d.innerHTML='<span class="logged">'+t+'</span>'; }
+
+const P=[["Carrara White 60x60",18,"https://images.unsplash.com/photo-1618221469555-7f3ad97540d6?w=300"],["Black Marquina",22,"https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=300"],["Grey Emperador",16,"https://images.unsplash.com/photo-1586105251261-72a756497a11?w=300"],["Calacatta Gold",28,"https://images.unsplash.com/photo-1616047006789-b7af5afb8c20?w=300"],["Travertine Beige",14,"https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=300"],["Statuario White",26,"https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=300"],["Verde Green",24,"https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=300"],["Crema Marfil",15,"https://images.unsplash.com/photo-1616046229478-9901c5536a45?w=300"],["Black+White Border",20,"https://images.unsplash.com/photo-1581858726788-75bc0f6a952d?w=300"],["Arabescato Slab",32,"https://images.unsplash.com/photo-1618221469555-7f3ad97540d6?w=300"],["Black Galaxy Granite",12,"https://images.unsplash.com/photo-1600585154084-4e5fe7c39198?w=300"],["Wood Look Beige",13,"https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=300"]];
+document.getElementById('g').innerHTML=P.map(x=>`<div class="card"><img src="${x[2]}"><div class="card-body"><div style="font-size:12px;font-weight:800;color:#4a148c;">${x[0]}</div><div class="price">${x[1]} Pi</div><button class="buy" onclick="buyPi('${x[0]}',${x[1]})">SALES • Buy ${x[1]} Pi</button></div></div>`).join('');
+
+function buyPi(name,price){
+ if(!currentUser){ alert('Tap LOGIN first!'); window.scrollTo(0,0); return; }
+ const wa=document.getElementById('wa').value; const lo=document.getElementById('lo').value;
+
+ // Outside Pi Browser -> WhatsApp (move without opening)
+ if(!PiReady || typeof Pi==='undefined' || !Pi.createPayment){
+   let t=`Hi Marble Floors SA! Order: ${name} for ${price} Pi. WhatsApp:${wa} Location:${lo} User:${currentUser.username}`;
+   window.open('https://wa.me/27607263726?text='+encodeURIComponent(t),'_blank'); return;
+ }
+
+ // Inside Pi Browser -> Real Pi Payment
+ document.getElementById('status').innerText='Creating Pi Payment...';
+ Pi.createPayment({
+   amount: price,
+   memo: name + ' - Marble Floors SA',
+   metadata: { product: name, whatsapp: wa, location: lo }
+ },{
+   onReadyForServerApproval: function(paymentId){
+     fetch('/api/approve-payment', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({paymentId}) });
+   },
+   onReadyForServerCompletion: function(paymentId, txid){
+     fetch('/api/complete-payment', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({paymentId, txid}) })
+     .then(()=>{ document.getElementById('status').innerText='✅ Pi Payment Complete!'; 
+       let t=`Pi Payment DONE! ${name} ${price} Pi. Tx:${txid} WhatsApp:${wa} Loc:${lo}`;
+       window.open('https://wa.me/27607263726?text='+encodeURIComponent(t),'_blank');
+     });
+   },
+   onCancel: function(){ document.getElementById('status').innerText='Payment Cancelled'; },
+   onError: function(e){ document.getElementById('status').innerText='Payment Error - Try WhatsApp'; console.log(e); }
+ });
+}
+</script></body></html>
