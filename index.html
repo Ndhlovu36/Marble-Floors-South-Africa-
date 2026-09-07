@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Marble Floors South Africa | Premium Marble & Granite</title>
+<script src="https://sdk.minepi.com/pi-sdk.js"></script>
+<script>Pi.init({version:"2.0", sandbox:false});</script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial;background:#fcfaf8;color:#222}
+.header{background:linear-gradient(135deg,#2c2c2c,#4a3f35);color:white;padding:18px 12px;text-align:center;position:sticky;top:0;z-index:10}
+.login-bar{background:#fff8e1;padding:10px;text-align:center;border-bottom:1px solid #e0e0e0}
+.login-btn{background:#6f42c1;color:white;border:none;padding:10px 18px;border-radius:20px;font-weight:bold;font-size:13px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:12px}
+.card{background:white;border-radius:14px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,0.08);border:1px solid #eee;display:flex;flex-direction:column}
+.card img{width:100%;height:140px;object-fit:cover}
+.card-body{padding:10px;flex:1;display:flex;flex-direction:column}
+.cat{font-size:9px;color:#8d6e63;font-weight:bold;text-transform:uppercase}
+.name{font-size:13.5px;font-weight:800;margin:3px 0}
+.desc{font-size:11px;color:#666;flex:1;margin-bottom:6px}
+.price{font-size:17px;font-weight:900;color:#3e2723}
+.old{font-size:11px;color:#999;text-decoration:line-through;margin-left:4px}
+.btn{width:100%;background:#3e2723;color:white;border:none;padding:10px;border-radius:8px;font-weight:bold;font-size:12.5px;margin-top:6px}
+.stock{font-size:10px;background:#efebe9;color:#4e342e;padding:2px 6px;border-radius:4px;display:inline-block}
+</style>
+</head>
+<body>
+<div class="header">
+<h1 style="font-size:20px;">MARBLE FLOORS SOUTH AFRICA</h1>
+<p style="font-size:12px;opacity:0.9;margin-top:4px;">Premium Marble • Granite • Travertine • Pay with Pi</p>
+<div style="background:white;color:#3e2723;display:inline-block;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:bold;margin-top:8px;">✨ 12 PREMIUM PRODUCTS IN STOCK</div>
+</div>
+<div class="login-bar">
+<button class="login-btn" id="piLoginBtn" onclick="loginPi()">🔐 Login with Pi to Buy</button>
+<span id="userInfo" style="display:none;font-weight:bold;color:#2e7d32;font-size:13px;"></span>
+<div id="browserWarn" style="font-size:11px;color:#856404;margin-top:6px;display:none;">Open in Pi Browser for real Pi payments.</div>
+</div>
+<div style="display:flex;gap:8px;padding:10px;background:white;border-bottom:1px solid #e0e0e0;">
+<input id="wa" placeholder="WhatsApp: 0607263726" style="flex:1;padding:11px;border:1px solid #ccc;border-radius:8px;">
+<input id="loc" placeholder="JHB" value="Johannesburg" style="flex:1;padding:11px;border:1px solid #ccc;border-radius:8px;">
+</div>
+<div class="grid" id="grid"></div>
+<script>
+let currentUser=null;
+window.onload=function(){ if(typeof Pi==='undefined'){document.getElementById('browserWarn').style.display='block';} loadProducts(); }
+function loginPi(){
+ if(typeof Pi==='undefined'){ alert('Demo mode - open in Pi Browser for real login'); currentUser={username:'DemoUser'}; document.getElementById('piLoginBtn').style.display='none'; document.getElementById('userInfo').style.display='inline'; document.getElementById('userInfo').innerText='✅ Demo Logged'; return; }
+ Pi.authenticate(['username','payments'], function(auth){ currentUser=auth.user; document.getElementById('piLoginBtn').style.display='none'; document.getElementById('userInfo').style.display='inline'; document.getElementById('userInfo').innerText='✅ @'+auth.user.username; });
+}
+const products=[
+{name:"Carrara White Marble 60x60",price:18,old:24,cat:"CLASSIC WHITE",desc:"Polished white 60x60cm, Italian look",img:"https://images.unsplash.com/photo-1618221469555-7f3ad97540d6?w=400"},
+{name:"Black Marquina Marble",price:22,old:30,cat:"LUXURY BLACK",desc:"Deep black with white veins, high gloss",img:"https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400"},
+{name:"Grey Emperador Marble",price:16,old:21,cat:"MODERN GREY",desc:"Warm grey brown for living rooms",img:"https://images.unsplash.com/photo-1586105251261-72a756497a11?w=400"},
+{name:"Calacatta Gold Marble",price:28,old:35,cat:"GOLD LUXURY",desc:"White with gold & grey veins, luxury",img:"https://images.unsplash.com/photo-1616047006789-b7af5afb8c20?w=400"},
+{name:"Travertine Beige Classic",price:14,old:18,cat:"TRAVERTINE",desc:"Natural beige, tumbled, outdoor safe",img:"https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=400"},
+{name:"Statuario White Marble",price:26,old:33,cat:"STATUARIO",desc:"Bright white bold grey veins",img:"https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=400"},
+{name:"Verde Green Marble",price:24,old:32,cat:"GREEN MARBLE",desc:"Exotic green, luxury statement",img:"https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=400"},
+{name:"Crema Marfil Marble",price:15,old:19,cat:"CREMA",desc:"Soft cream beige, popular SA",img:"https://images.unsplash.com/photo-1616046229478-9901c5536a45?w=400"},
+{name:"Black + White Border Design",price:20,old:26,cat:"BORDER DESIGN",desc:"Black field with white border",img:"https://images.unsplash.com/photo-1581858726788-75bc0f6a952d?w=400"},
+{name:"Arabescato Slab",price:32,old:40,cat:"SLAB",desc:"Large format dramatic veining",img:"https://images.unsplash.com/photo-1618221469555-7f3ad97540d6?w=400"},
+{name:"Black Galaxy Granite",price:12,old:16,cat:"GRANITE",desc:"Black galaxy, super hard wearing",img:"https://images.unsplash.com/photo-1600585154084-4e5fe7c39198?w=400"},
+{name:"Wood Look Marble Beige",price:13,old:17,cat:"WOOD MARBLE",desc:"Wood effect, warm modern",img:"https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400"}
+];
+function loadProducts(){
+ document.getElementById('grid').innerHTML=products.map(p=>`
+ <div class="card"><img src="${p.img}" loading="lazy"><div class="card-body"><span class="cat">${p.cat}</span><div class="name">${p.name}</div><div class="desc">${p.desc}</div><span class="stock">● In Stock - SA Warehouse</span><div style="margin:6px 0"><span class="price">${p.price} Pi</span><span class="old">${p.old} Pi</span></div><button class="btn" onclick="buyProduct('${p.name}',${p.price})">SALES • Buy ${p.price} Pi</button></div></div>`).join('');
+}
+function buyProduct(name,price){
+ const wa=document.getElementById('wa').value.trim(); const loc=document.getElementById('loc').value.trim()||'JHB';
+ if(!wa){alert('Enter WhatsApp');return;} if(!currentUser){alert('Login with Pi first at top!');return;}
+ if(typeof Pi==='undefined'){alert('✅ DEMO ORDER: '+name+' '+price+' Pi WhatsApp:'+wa);return;}
+ Pi.createPayment({amount:price,memo:'Marble SA: '+name,metadata:{product:name,whatsapp:wa,location:loc}},{
+   onReadyForServerApproval:function(id){return fetch('/api/approve-payment',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({paymentId:id})});},
+   onReadyForServerCompletion:function(id,txid){return fetch('/api/complete-payment',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({paymentId:id,txid:txid,product:name,whatsapp:wa,location:loc})}).then(()=>{alert('✅ PAID! '+name);});},
+   onCancel:function(){alert('Cancelled');}, onError:function(e){alert('Error:'+e);}
+ });
+}
+</script>
+</body>
+</html>
