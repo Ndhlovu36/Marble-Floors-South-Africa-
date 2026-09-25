@@ -1,0 +1,57 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Marble Floors SA - Pi Only</title>
+<script src="https://sdk.minepi.com/pi-sdk.js"></script>
+<style>
+body{font-family:Arial;margin:0;background:#f5f3f0}
+.header{background:#0d3d2e;color:#fff;padding:16px;text-align:center;position:sticky;top:0;z-index:20}
+.btn-login{background:#00c853;color:#fff;border:none;padding:11px 22px;border-radius:25px;font-weight:900;cursor:pointer}
+.logged{background:#2e7d32;color:#fff;padding:6px 14px;border-radius:20px;font-weight:900;font-size:12px}
+.tabs{display:flex;background:#0d3d2e;gap:6px;padding:6px;justify-content:center}
+.tab{padding:6px 14px;border-radius:20px;border:1px solid #00c853;color:#00c853;background:transparent;font-weight:bold;font-size:11px;cursor:pointer}
+.tab.active{background:#00c853;color:#fff}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px}
+.card{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.1);border:1px solid #e0e0e0}
+.card img{width:100%;height:120px;object-fit:cover;background:#efefef}
+.card-body{padding:9px}
+.badge{position:absolute;top:6px;right:6px;background:#0d3d2e;color:#fff;padding:3px 8px;border-radius:10px;font-size:10px;font-weight:900}
+.price{color:#0d3d2e;font-weight:900;font-size:15px}
+.stock{color:#00c853;background:#e8f5e9;padding:3px 8px;border-radius:12px;font-size:10px;font-weight:700;display:inline-block;margin-left:6px}
+.btn-pi{background:#0d3d2e;color:#00c853;width:100%;padding:10px;border:1px solid #00c853;border-radius:8px;font-weight:900;margin-top:6px;cursor:pointer}
+.btn-wa{background:#25D366;color:white;width:100%;padding:8px;border:none;border-radius:8px;font-weight:700;margin-top:6px;cursor:pointer;font-size:11px}
+#piStatus{padding:10px;text-align:center;font-weight:bold;font-size:12px;display:none}
+.topFilters{display:flex;gap:6px;padding:8px;overflow-x:auto;background:#fff;white-space:nowrap}
+.filter{padding:6px 16px;border-radius:20px;border:1px solid #ccc;background:#fff;font-size:12px}
+.filter.active{background:#0d3d2e;color:#fff;border-color:#0d3d2e}
+</style></head><body>
+<div class="header">
+<h1 style="margin:0;font-size:18px;">MARBLE FLOORS SOUTH AFRICA</h1>
+<p style="font-size:10px;margin:4px 0 0 0;color:#a5d6a7;">11 Products • 100% Pi Payment • No Fiat</p>
+<div style="margin-top:10px;"><button class="btn-login" id="lb" onclick="login()">🔐 LOGIN WITH PI</button><div id="li" style="display:none;margin-top:6px;"></div><div id="st" style="font-size:10px;color:#a5d6a7;margin-top:5px;">Login to buy with Pi</div></div>
+</div>
+<div class="tabs"><button class="tab active" id="tabTest" onclick="setMode('test')">🟡 TESTNET</button><button class="tab" id="tabMain" onclick="setMode('main')">🟢 MAINNET</button></div>
+<div id="piStatus"></div>
+<div class="topFilters"><span class="filter active">All</span><span class="filter">Coatings</span><span class="filter">Primers</span><span class="filter">Tools</span><span class="filter">20L</span></div>
+<div class="grid" id="g"></div>
+<script>
+let logged=false, piUser=null, mode='test';
+function status(m,c){let e=document.getElementById('piStatus');e.style.display='block';e.style.background=c||'#fff3cd';e.innerText=m;}
+function setMode(m){mode=m;document.getElementById('tabTest').classList.toggle('active',m==='test');document.getElementById('tabMain').classList.toggle('active',m==='main');initPi();}
+function initPi(){try{Pi.init({version:"2.0",sandbox:(mode==='test')});status(`Pi ${mode.toUpperCase()} Sandbox ${mode==='test'?'ON':'OFF'} ✅`,"#e8f5e9");}catch(e){status("Pi SDK "+e.message,"#ffebee");}}
+window.addEventListener('load',()=>{setTimeout(initPi,500);});
+function login(){
+ if(typeof Pi==='undefined'){status("❌ Open in Pi Browser!","#ffebee");alert("Open in Pi Browser App");return;}
+ status("⏳ Approve in Pi Browser...","#fff9c4");
+ Pi.authenticate(['username','payments'],()=>{}).then(a=>{
+   logged=true; piUser=a.user;
+   document.getElementById('lb').style.display='none';
+   let d=document.getElementById('li'); d.style.display='block'; d.innerHTML='<span class="logged">✅ @'+a.user.username+'</span>';
+   document.getElementById('st').innerText='✅ Pi Ready - π Only';
+   status(`✅ @${a.user.username} Connected - Pay with Pi`,"#e8f5e9");
+ }).catch(e=>{status("Login failed "+e.message,"#ffebee");});
+}
+const P=[
+["Epoxy Marble Coating - White Pearl 20L",12,"https://images.unsplash.com/photo-1618221469555-7f3ad97540d6?w=400","High-gloss white pearl epoxy marble effect"],
+["Epoxy Marble Coating - Grey Stone 20L",12,"https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400","Elegant grey stone marble effect coating"],
+["Epoxy Marble Coating - Black Galaxy 20L",13,"https://images.unsplash.com/photo-1586105251261-72a756497a11?w=400","Premium black galaxy marble epoxy"],
+["Epoxy Marble Coating - Beige Cream 20L",11,"https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=400","Warm beige cream marble finish"],
+["Epoxy Marble Coating - Blue Ocean
